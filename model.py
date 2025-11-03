@@ -1,7 +1,3 @@
-# Replication of the model architecture used in the paper DeepDTA in pytorch
-# Author: @ksun63
-# Date: 2023-04-14
-
 import torch
 import torch.nn as nn
 

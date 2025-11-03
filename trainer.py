@@ -1,7 +1,3 @@
-# data processing and training of the DeepDTA paper in pytorch code with your own data
-# Author: @ksun63
-# Date: 2023-04-14
-
 import numpy as np
 import pandas as pd
 import json
