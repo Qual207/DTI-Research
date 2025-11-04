@@ -1,15 +1,13 @@
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, Subset, DataLoader
-from torch.utils.tensorboard import SummaryWriter
+#from torch.utils.tensorboard import SummaryWriter
 from copy import deepcopy
 import numpy as np
 import pandas as pd
 import logging
 import json
 from tqdm import tqdm
-
-
 
 class DTIDataset(Dataset):
     def __init__(self, df, seqlen=2000, smilen=200):
@@ -38,6 +36,10 @@ class DTIDataset(Dataset):
         pr = self.proteins[idx]
         lig = self.ligands[idx]
         target = self.affinity[idx]
+
+        #truncate if longer than max length - NEED TO OPTIMIZE THIS LATER
+        pr = pr[:self.seqlen]
+        lig = lig[:self.smilelen]
 
         protein_ids = [self.protein_dict[x] for x in pr] + [0] * (self.seqlen - len(pr))
         ligand_ids = [self.ligand_dict[x] for x in lig] + [0] * (self.smilelen - len(lig))

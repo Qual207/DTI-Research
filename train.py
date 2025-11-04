@@ -1,5 +1,3 @@
-"""Train the DeepDTA model"""
-
 import argparse
 import logging
 import os
@@ -34,8 +32,7 @@ def train(model, optimizer, loss_fn, dataloader, params):
     loss_avg = utils.RunningAverage()
     
     with tqdm(total=len(dataloader)) as t:
-        for batch in dataloader:
-            pr, lig, y = batch['protein'], batch['ligand'], batch['affinity']
+        for pr, lig, y in dataloader:
             if params.cuda:
                 pr, lig, y = pr.cuda(non_blocking=True), lig.cuda(non_blocking=True), y.cuda(non_blocking=True)
 
@@ -69,11 +66,7 @@ def train_and_evaluate(model, train_loader, val_loader, optimizer, loss_fn, para
         val_loss = val_metrics['loss']
         is_best = val_loss <= best_val_loss
 
-        utils.save_checkpoint({'epoch': epoch + 1,
-                               'state_dict': model.state_dict(),
-                               'optim_dict': optimizer.state_dict()},
-                               is_best=is_best,
-                               checkpoint=model_dir)
+        utils.save_checkpoint(model, os.path.join(model_dir, "best_model.pt"))
 
         if is_best:
             logging.info(f"- Found new best model (val_loss={val_loss:.4f})")

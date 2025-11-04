@@ -1,0 +1,9 @@
+{
+  "learning_rate": 0.001,
+  "batch_size": 64,
+  "num_epochs": 10,
+  "channel": 32,
+  "protein_kernel_size": 8,
+  "ligand_kernel_size": 6,
+  "weight_decay": 1e-5
+}
