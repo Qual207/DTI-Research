@@ -6,7 +6,7 @@ import os
 
 def deepdta_to_csv(dataset_dir, output_file):
     #load the binding affinity matrix (Y)
-    Y = pickle.load(open(os.path.join(dataset_dir, "Y"), "rb"))
+    Y = pickle.load(open(os.path.join(dataset_dir, "Y"), "rb"), encoding='latin1')
     ligands_path = os.path.join(dataset_dir, "ligands_iso.txt")
     proteins_path = os.path.join(dataset_dir, "proteins.txt")
 
@@ -27,8 +27,8 @@ def deepdta_to_csv(dataset_dir, output_file):
     data = []
     for d_idx, p_idx in zip(drug_inds, protein_inds):
             data.append({
-                "drug_id": ligand_ids[d_idx],              
-                "protein_id": protein_ids[p_idx],         
+                # "drug_id": ligand_ids[d_idx],              
+                # "protein_id": protein_ids[p_idx],         
                 "ligands": ligands[d_idx],            
                 "proteins": proteins[p_idx],      
                 "affinity": Y[d_idx, p_idx]               
@@ -37,3 +37,7 @@ def deepdta_to_csv(dataset_dir, output_file):
     df = pd.DataFrame(data)
     df.to_csv(output_file, index=False)
     print(f"CSV saved to {output_file}")
+
+if __name__ == "__main__" :
+    deepdta_to_csv("data/davis", "data/processed/davis.csv")
+    deepdta_to_csv("data/kiba", "data/processed/kiba.csv")
