@@ -21,8 +21,6 @@ parser.add_argument('--data_path', default='data/processed/davis.csv',
                     help="Path to dataset CSV file")
 parser.add_argument('--model_dir', default='experiments/base_model',
                     help="Directory containing params.json and saved weights")
-parser.add_argument('--restore_file', default=None,
-                    help="Optional — checkpoint file to restore from (without extension)")
 args = parser.parse_args()
 
 
@@ -49,7 +47,7 @@ def train(model, optimizer, loss_fn, dataloader, params):
     return loss_avg()
 
 
-def train_and_evaluate(model, train_loader, val_loader, optimizer, loss_fn, params, model_dir, restore_file=None):
+def train_and_evaluate(model, train_loader, val_loader, optimizer, loss_fn, params, model_dir):
     """Train the model and evaluate every epoch"""
     if restore_file is not None:
         restore_path = os.path.join(model_dir, restore_file + '.pth.tar')
@@ -66,7 +64,7 @@ def train_and_evaluate(model, train_loader, val_loader, optimizer, loss_fn, para
         val_loss = val_metrics['loss']
         is_best = val_loss <= best_val_loss
 
-        utils.save_checkpoint(model, os.path.join(model_dir, "best_model.pt"))
+        utils.save_checkpoint(model, optimizer, os.path.join(model_dir, "best_model.pt"))
 
         if is_best:
             logging.info(f"- Found new best model (val_loss={val_loss:.4f})")
@@ -112,4 +110,4 @@ if __name__ == "__main__":
     loss_fn = nn.MSELoss()
 
     logging.info(f"Starting training for {params.num_epochs} epochs")
-    train_and_evaluate(model, train_loader, val_loader, optimizer, loss_fn, params, args.model_dir, args.restore_file)
+    train_and_evaluate(model, train_loader, val_loader, optimizer, loss_fn, params, args.model_dir)

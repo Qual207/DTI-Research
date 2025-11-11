@@ -60,10 +60,24 @@ def set_logger(log_path):
         stream_handler.setFormatter(logging.Formatter('%(message)s'))
         logger.addHandler(stream_handler)
 
-def save_checkpoint(model, path):
+def save_checkpoint(model, optimizer, path):
+    """Saves model and optimizer state."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    torch.save(model.state_dict(), path)
+    torch.save({
+        'model_state_dict': model.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict()
+    }, path)
 
-def load_checkpoint(model, path, device):
-    model.load_state_dict(torch.load(path, map_location=device))
-    return model
+def load_checkpoint(path, model, optimizer=None, device='cpu'):
+    """Loads model and optimizer states."""
+    checkpoint = torch.load(path, map_location=device)
+    model.load_state_dict(checkpoint['model_state_dict'])
+    if optimizer:
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+
+
+def save_dict_to_json(d, json_path):
+    with open(json_path, 'w') as f:
+        d = {k: float(v) for k, v in d.items()}
+        json.dump(d, f, indent=4)
+
